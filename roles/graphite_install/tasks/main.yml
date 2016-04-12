@@ -1,0 +1,22 @@
+---
+- name: Install graphite web
+  apt: name=graphite-web state=present
+
+- name: Install graphite carbon
+  shell: DEBIAN_FRONTEND=noninteractive apt-get -q -y --force-yes install graphite-carbon
+
+
+- name: Install graphite and postgresql components.
+  apt: name={{ item }} state=present
+  with_items:
+    - postgresql
+    - libpq-dev
+    - python-psycopg2
+
+- name: Create graphite user in db
+  sudo_user: postgres
+  postgresql_user: name=graphite password=password
+
+- name: Create graphite db
+  sudo_user: postgres
+  postgresql_db: name=graphite owner=graphite login_user=postgres

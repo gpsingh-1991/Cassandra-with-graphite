@@ -1,0 +1,22 @@
+---
+- name: Add the repositories required for Cassandra installation
+  apt_repository: repo={{ item }} state=present
+  with_items:
+    - "'deb http://www.apache.org/dist/cassandra/debian 22x main'"
+    - "'deb-src http://www.apache.org/dist/cassandra/debian 22x main'"
+
+- name: Download and add the gpg keys.
+  apt_key: keyserver="hkp://pgp.mit.edu:80" id={{ item }}
+  with_items:
+    - F758CE318D77295D
+    - 2B5C1B00
+    - 0353B12C
+
+- name: Install Cassandra
+  apt: name=cassandra state=present force=yes
+
+- name: Modify the init.d file of cassandra
+  replace: dest='/etc/init.d/cassandra' regexp="CMD_PATT=.*" replace='CMD_PATT="cassandra"'
+  notify: start cassy
+
+

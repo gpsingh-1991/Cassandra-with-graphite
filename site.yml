@@ -1,0 +1,10 @@
+---
+- name: Open challenge implementation
+  hosts: <Enter the name of host group here>
+  gather_facts: no
+  roles:
+    - prerequisites
+    - cassy_install
+    - graphite_install
+    - graphite_config
+    - apache_config

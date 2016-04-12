@@ -1,0 +1,23 @@
+---
+- name: Copy the update configuration file.
+  copy: src=local_settings.py dest=/etc/graphite backup=yes
+
+- name: Sync the database
+  shell: graphite-manage syncdb --noinput
+
+- name: Enable carbon to start at boot up.
+  replace: dest=/etc/default/graphite-carbon regexp=false replace=true
+
+- name: Enable the log rotation
+  ini_file: dest=/etc/carbon/carbon.conf section=cache option=ENABLE_LOGROTATION value=True
+
+- name: Copy the script recording cassandra stats to the server.
+  copy: src=record_cassy.sh dest=/root/
+
+- name: Place the script in cron
+  cron: name="Cassandra statistics" job="bash /root/record_cassy.sh" state=present
+
+- name: Copy the example storage-aggregation file to carbon directory.
+  shell: cp /usr/share/doc/graphite-carbon/examples/storage-aggregation.conf.example /etc/carbon/storage-aggregation.conf
+  notify: restart carbon-cache
+

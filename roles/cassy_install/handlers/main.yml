@@ -1,0 +1,3 @@
+---
+- name: start cassy
+  service: name=cassandra state=started

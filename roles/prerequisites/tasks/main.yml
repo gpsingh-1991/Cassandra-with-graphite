@@ -1,0 +1,13 @@
+---
+- name: Add repository for java installation
+  apt_repository: repo='ppa:webupd8team/java' state=present
+
+- name: Set license value to true 
+  debconf: name='oracle-java8-set-default' question=shared/accepted-oracle-license-v1-1 value=true vtype=select
+  #shell: echo 'debconf shared/accepted-oracle-license-v1-1 select true' | debconf-set-selections
+
+#- name: Set license seen to true
+  #shell: echo 'debconf shared/accepted-oracle-license-v1-1 seen true' | debconf-set-selections
+
+- name: Install Java
+  apt: name='oracle-java8-set-default' state=present install_recommends=yes

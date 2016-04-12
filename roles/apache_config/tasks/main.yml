@@ -1,0 +1,18 @@
+---
+- name: Install apache related packages
+  apt: name={{ item }} state=present
+  with_items:
+    - apache2
+    - libapache2-mod-wsgi
+
+- name: Disable default virtual host file
+  shell: a2dissite 000-default
+
+- name: Copy the Graphite Apache virtual host file into the available sites directory
+  shell: cp /usr/share/graphite-web/apache2-graphite.conf /etc/apache2/sites-available
+
+- name: Enable the virtual host file 
+  shell: a2ensite apache2-graphite
+
+- name: Restart apache service.
+  service: name=apache2 state=reloaded
